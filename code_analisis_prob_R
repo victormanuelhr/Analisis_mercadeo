@@ -1,0 +1,35 @@
+getwd()
+setwd("C:/mi_ruta") #Por favor inserte la ruta en la cual alojó el archivo
+
+mercadeo <- read_excel("mercadeo.xlsx") 
+View(mercadeo)
+
+col_hombres<-unlist(as.vector(col_hombres))
+col_mujeres<-unlist(as.vector(col_mujeres))
+p3c<-t.test(col_hombres,col_mujeres,conf.level = 0.98)
+p3c$p.value
+#valor p nos hace ver que no hay diferencia en los promedios, no existe una diferencia entre lo que ambos estarían dispuestos a pagar
+
+compra<-mercadeo %>% select(COMPRA,CIUDAD) %>% filter(!is.na(COMPRA),CIUDAD==c("BOGOTÁ","CALI"))
+compra_bog<-compra %>% filter(CIUDAD=="BOGOTÁ")
+compra_bog_si<-compra_bog %>% filter(COMPRA=="Si")
+compra_cal<-compra %>% filter(CIUDAD=="CALI")
+compra_cal_si<-compra_cal %>% filter(COMPRA=="Si")
+cbs<-count(compra_bog_si);cbs
+cb<-count(compra_bog);cb
+ccs<-count(compra_cal_si);ccs
+cc<-count(compra_cal);cc
+
+p4a<-prop.test(x=c(662,408),n=c(954,651),conf.level = 0.95,alternative = "greater")
+
+p4a$p.value
+
+#Dado el valor p de 0.00298 se rechaza h0 y se puede decir que hay una diferencia en la proporción de personas que compraría en Bogotá vs la que
+#Compraría en Cali. Siendo la proporción de la población de Bogotá mayor a la de Cali
+
+base_p5<-mercadeo %>% select(PUNT_COLOR,ESTRATO) %>% filter(!is.na(PUNT_COLOR),!is.na(ESTRATO))
+p5=aov(base_p5$PUNT_COLOR~base_p5$ESTRATO)
+summary(p5)
+#sí existe diferencia entre las calificaciones del puntaje de color pues el valor p muy pequeño.
+#De igual manera el valor F es muy alto y alejado del 1 lo que muestra que hay una gran variabilidad entre los estratos
+
